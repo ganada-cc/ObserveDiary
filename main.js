@@ -53,8 +53,8 @@ const port = 3000,
     app = express(),
     fs = require("fs"),
     layouts = require("express-ejs-layouts"),
-    calendarRouter = require('./routes/calendarRoute'),
-    usersRouter = require('./routes/usersRoute');
+    calendarRouter = require('./routes/calendarRoute');
+    // usersRouter = require('./routes/usersRoute');    //삭제
     //reminderRouter = require('./routes/reminderRoute'),
     //communityRouter = require('./routes/communityRoute'),
     //sanitizeHtml = require('sanitize-html'),
@@ -74,7 +74,7 @@ app.use(cookieParser());
 
 //라우터 등록
 app.use('/calendar', calendarRouter);
-app.use('/users', usersRouter);
+// app.use('/users', usersRouter); //삭제
 //app.use('/reminder', reminderRouter);
 //app.use('/community', communityRouter)
 //app.use('/export', exportRouter);
