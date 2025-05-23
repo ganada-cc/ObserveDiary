@@ -79,42 +79,6 @@ async function selectCalendar(pool, userId, date) {
   return userRow;
 }
 
-// 파일 업로드
-async function insertFileMem(pool, insertFileMemParams) {
-  try {
-    const connection = await pool.getConnection();
-
-    const getCalendarIdQuery = `
-      SELECT calendar_id FROM calendar WHERE user_id = '${insertFileMemParams[0]}' AND \`date\` = '${insertFileMemParams[1]}';
-    `;
-    const insertFileMemQuery = `
-      INSERT INTO file_memories (user_id, calendar_id, server_name, user_name, extension)
-      VALUES (?, ?, ?, ?, ?);
-    `;
-
-    let [calendarIDRow] = await connection.query(getCalendarIdQuery);
-    let calendar_id;
-
-    if (calendarIDRow && calendarIDRow.length > 0) {
-      calendar_id = calendarIDRow[0].calendar_id;
-    } else {
-      const insertCalendarQuery = `
-        INSERT INTO calendar (user_id, date) VALUES ('${insertFileMemParams[0]}', '${insertFileMemParams[1]}');
-      `;
-      await connection.query(insertCalendarQuery);
-      [calendarIDRow] = await connection.query(getCalendarIdQuery);
-      calendar_id = calendarIDRow[0].calendar_id;
-    }
-
-    insertFileMemParams[1] = calendar_id;
-    const [insertFileRow] = await connection.query(insertFileMemQuery, insertFileMemParams);
-
-    return { calendarIDRow, insertFileRow };
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
 
 // 데이터 삽입
 async function insertCalInfo(pool, deleteParams, insertParams, getIdParams, user_id, check_content, is_check, symptom_range) {
@@ -155,7 +119,6 @@ async function insertCalInfo(pool, deleteParams, insertParams, getIdParams, user
 
 module.exports = {
   selectCalendar,
-  insertFileMem,
   getSelectedCalendar,
   insertCalInfo
 };
