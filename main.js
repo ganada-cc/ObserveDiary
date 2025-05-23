@@ -46,8 +46,6 @@ app.get("/", (req,res) => {
     res.render("users/login");
 });
 
-
-
 app.listen(port,() => {
   const dir = "./uploads";
   if (!fs.existsSync(dir)) {
