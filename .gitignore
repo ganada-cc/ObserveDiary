@@ -1,0 +1,5 @@
+config/sens.env
+config/secret.js
+config/database.env
+config/gpt.env
+cheeseenv/
