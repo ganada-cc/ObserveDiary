@@ -9,33 +9,26 @@ const requiredEnvVars = [
   { key: 'DB_PORT', message: 'Missing community env: DB_PORT' },
   { key: 'DB_NAME', message: 'Missing community env: DB_NAME' },
 ];
-
 for (const env of requiredEnvVars) {
   if (!process.env[env.key]) {
     throw new Error(env.message);
   }
 }
-pool.query('SELECT DATABASE() AS db', (err, results) => {
-  if (err) {
-    console.error('DB 확인 중 오류:', err);
-  } else {
-    console.log('🔥 현재 연결된 DB 이름:', results[0].db);
-  }
-});
-
 const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PW,
-    port: process.env.DB_PORT,
-    database: process.env.DB_NAME,
-    waitForConnections: true,
-    insecureAuth: true,
-    charset: 'utf8mb4'
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PW,
+  port: process.env.DB_PORT,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  insecureAuth: true,
+  charset: 'utf8mb4'
 });
-
 
 module.exports = pool;  //모듈로 내보내기
+
+
+
 
 // 기본 설정
 const port = 3000,

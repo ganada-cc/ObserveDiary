@@ -1,17 +1,17 @@
 const calendarService = require('../services/calendarService');
 const path = require('path');
 const calendarDate = require('../public/js/calendar.js');
-const jwt = require('jsonwebtoken');
-const secret = require('../config/secret');
+// const jwt = require('jsonwebtoken');
+// const secret = require('../config/secret');
 const querystring = require('querystring');
 const baseResponse = require("../config/baseResponseStatus");
 
 // 캘린더 조회
 exports.getCalendar = async function (req, res) {
-  const token = req.cookies.x_auth;
-  if (token) {
-    const decodedToken = jwt.verify(token, secret.jwtsecret);
-    const user_id = decodedToken.user_id;
+  const user_id = req.headers['x-user-id'] || 'test'; // 개발환경 기본값 'test'
+
+  if (!user_id) return res.send(baseResponse.USER_USERIDX_EMPTY);
+  if (parseInt(user_id) <= 0) return res.send(baseResponse.USER_USERIDX_LENGTH);
 
     let date = req.query.selectedYear + req.query.selectedMonth + req.query.selectedDate;
     if (!req.query.selectedYear || !req.query.selectedMonth || !req.query.selectedDate) {
@@ -50,16 +50,15 @@ exports.getCalendar = async function (req, res) {
       console.error("❌ getCalendar 에러:", err);
       return res.status(500).send("서버 에러 발생");
     }
-  } else {
-    return res.redirect('/');
-  }
+  
 };
 
 exports.postCalendar = async function (req, res) {
-  const token = req.cookies.x_auth;
-  if (token) {
-    const decodedToken = jwt.verify(token, secret.jwtsecret);
-    const user_id = decodedToken.user_id;
+  const user_id = req.headers['x-user-id'] || 'test';
+
+  if (!user_id) return res.send(baseResponse.USER_USERIDX_EMPTY);
+  if (parseInt(user_id) <= 0) return res.send(baseResponse.USER_USERIDX_LENGTH);
+
     console.log("📥 받은 캘린더 데이터:", req.body);
     const date = req.query.selectedYear + req.query.selectedMonth + req.query.selectedDate;
     console.log("📅 등록 날짜:", date);
@@ -119,7 +118,5 @@ exports.postCalendar = async function (req, res) {
         </script>
       `);
     }
-  } else {
-    return res.redirect('/');
-  }
+  
 };
