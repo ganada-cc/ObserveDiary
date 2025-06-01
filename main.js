@@ -1,6 +1,28 @@
 //connect database
-require('dotenv').config({path: "./config/database.env"});
+// require('dotenv').config({path: "./config/database.env"});
 const mysql = require('mysql2/promise');
+const requiredEnvVars = [
+  { key: 'PORT', message: 'Missing community env: PORT' },
+  { key: 'DB_HOST', message: 'Missing community env: DB_HOST' },
+  { key: 'DB_USER', message: 'Missing community env: DB_USER' },
+  { key: 'DB_PW', message: 'Missing community env: DB_PW' },
+  { key: 'DB_PORT', message: 'Missing community env: DB_PORT' },
+  { key: 'DB_NAME', message: 'Missing community env: DB_NAME' },
+];
+
+for (const env of requiredEnvVars) {
+  if (!process.env[env.key]) {
+    throw new Error(env.message);
+  }
+}
+pool.query('SELECT DATABASE() AS db', (err, results) => {
+  if (err) {
+    console.error('DB 확인 중 오류:', err);
+  } else {
+    console.log('🔥 현재 연결된 DB 이름:', results[0].db);
+  }
+});
+
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -11,6 +33,7 @@ const pool = mysql.createPool({
     insecureAuth: true,
     charset: 'utf8mb4'
 });
+
 
 module.exports = pool;  //모듈로 내보내기
 
