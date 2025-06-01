@@ -1,6 +1,7 @@
 //connect database
 // require('dotenv').config({path: "./config/database.env"});
 const mysql = require('mysql2/promise');
+
 const requiredEnvVars = [
   { key: 'PORT', message: 'Missing community env: PORT' },
   { key: 'DB_HOST', message: 'Missing community env: DB_HOST' },
@@ -38,7 +39,7 @@ const port = 3000,
     fs = require("fs"),
     layouts = require("express-ejs-layouts"),
     calendarRouter = require('./routes/calendarRoute'),
-    usersRouter = require('./routes/usersRoute'),
+    // usersRouter = require('./routes/usersRoute'),
     sanitizeHtml = require('sanitize-html'),
     puppeteer = require('puppeteer');
 
@@ -55,11 +56,10 @@ app.use(cookieParser());
 
 //라우터 등록
 app.use('/calendar', calendarRouter);
-app.use('/users', usersRouter);
+// app.use('/users', usersRouter);
 
-// root - 로그인
-app.get("/", (req,res) => {
-    res.render("users/login");
+app.get('/', (req, res) => {
+  res.redirect('/calendar');
 });
 
 app.listen(port,() => {
