@@ -15,7 +15,7 @@ metadata:
   name: observe-diary
 spec:
   replicas: 1
-  revisionHistoryLimit: 3
+  revisionHistoryLimit: 1
   selector:
     matchLabels:
       app: observe-diary
