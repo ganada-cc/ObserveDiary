@@ -1,0 +1,79 @@
+# ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: observe-diary-config
+data:
+  DB_HOST: cc-db.c32segwywmue.ap-northeast-2.rds.amazonaws.com
+  DB_PORT: "3306"
+  DB_NAME: observe_diary
+---
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: observe-diary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: observe-diary
+  template:
+    metadata:
+      labels:
+        app: observe-diary
+    spec:
+      containers:
+      - name: observe-diary-container
+        image: handa11/observe-diary:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: observe-diary-config
+              key: DB_HOST
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: observe-diary-config
+              key: DB_PORT
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: observe-diary-config
+              key: DB_NAME
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: observe-diary-config
+              key: DB_USER
+        - name: DB_PW
+          valueFrom:
+            secretKeyRef:
+              name: observe-diary-config
+              key: DB_PW
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: observe-diary-config
+              key: PASSWORD
+        - name: PORT
+          value: "3000"
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: observe-diary
+spec:
+  type: ClusterIP
+  selector:
+    app: observe-diary
+  ports:
+  - port: 80
+    targetPort: 3000
+
+
