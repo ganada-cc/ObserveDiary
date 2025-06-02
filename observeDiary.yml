@@ -56,11 +56,6 @@ spec:
             secretKeyRef:
               name: observe-diary-config
               key: DB_PW
-        - name: PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: observe-diary-config
-              key: PASSWORD
         - name: PORT
           value: "3000"
 ---
