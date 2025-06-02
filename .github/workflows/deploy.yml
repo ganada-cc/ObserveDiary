@@ -60,7 +60,7 @@ jobs:
 
       - name: Replace image tag in observeDiary.yml
         run: |
-          sed -i "s|image: handa11/observe-diary:.*|image: handa11/observe-diary:${{ github.sha }}|" oberveDiary.yml
+          sed -i "s|image: handa11/observe-diary:.*|image: handa11/observe-diary:${{ github.sha }}|" observeDiary.yml
 
       - name: Apply Kubernetes Manifests
         run: |
