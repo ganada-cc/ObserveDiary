@@ -61,11 +61,10 @@ app.use('/calendar', calendarRouter);
 // app.get('/', (req, res) => {
 //   res.redirect('/calendar');
 // });
-app.use('/', (req, res, next) => {
-  if (req.path === '/') {
-    console.log(`루트(/) 요청 감지: ${req.method} ${req.originalUrl}`);
-  }
-  next();
+// 루트 요청 로그 및 응답
+app.get('/', (req, res, next) => {
+  console.log(`루트(/) 요청 감지: ${req.method} ${req.originalUrl}`);
+  res.send('캘린더 루트 경로 응답입니다');
 });
 
 
