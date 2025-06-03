@@ -8,7 +8,7 @@ const baseResponse = require("../config/baseResponseStatus");
 
 // 캘린더 조회
 exports.getCalendar = async function (req, res) {
-  const user_id = req.headers['x-user-id'] || 'test'; // 개발환경 기본값 'test'
+  const user_id = req.user.user_id;
 
   if (!user_id) return res.send(baseResponse.USER_USERIDX_EMPTY);
   if (parseInt(user_id) <= 0) return res.send(baseResponse.USER_USERIDX_LENGTH);
@@ -54,7 +54,7 @@ exports.getCalendar = async function (req, res) {
 };
 
 exports.postCalendar = async function (req, res) {
-  const user_id = req.headers['x-user-id'] || 'test';
+  const user_id = req.user.user_id;
 
   if (!user_id) return res.send(baseResponse.USER_USERIDX_EMPTY);
   if (parseInt(user_id) <= 0) return res.send(baseResponse.USER_USERIDX_LENGTH);
