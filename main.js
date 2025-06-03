@@ -58,9 +58,9 @@ app.use(cookieParser());
 app.use('/calendar', calendarRouter);
 // app.use('/users', usersRouter);
 
-app.get('/', (req, res) => {
-  res.redirect('/calendar');
-});
+// app.get('/', (req, res) => {
+//   res.redirect('/calendar');
+// });
 
 app.listen(port,() => {
   const dir = "./uploads";
