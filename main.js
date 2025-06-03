@@ -61,6 +61,13 @@ app.use('/calendar', calendarRouter);
 // app.get('/', (req, res) => {
 //   res.redirect('/calendar');
 // });
+app.use('/', (req, res, next) => {
+  if (req.path === '/') {
+    console.log(`루트(/) 요청 감지: ${req.method} ${req.originalUrl}`);
+  }
+  next();
+});
+
 
 app.listen(port,() => {
   const dir = "./uploads";
