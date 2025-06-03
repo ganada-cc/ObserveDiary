@@ -8,54 +8,45 @@ const baseResponse = require("../config/baseResponseStatus");
 
 // 캘린더 조회
 exports.getCalendar = async function (req, res) {
-
   const user_id = req.headers['x-user-id'];
+
   if (!user_id) {
     console.log('⚠️ x-user-id 헤더가 없습니다!');
-  } else {
-    console.log('✅ 받은 x-user-id:', user_id);
+    return res.send(baseResponse.USER_USERIDX_EMPTY);
   }
-  if (!user_id) return res.send(baseResponse.USER_USERIDX_EMPTY);
+
   if (parseInt(user_id) <= 0) return res.send(baseResponse.USER_USERIDX_LENGTH);
 
-    let date = req.query.selectedYear + req.query.selectedMonth + req.query.selectedDate;
-    if (!req.query.selectedYear || !req.query.selectedMonth || !req.query.selectedDate) {
-      const today = new Date();
-      const selectedYear = String(today.getFullYear()).padStart(4, '0');
-      const selectedMonth = String(today.getMonth() + 1).padStart(2, '0');
-      const selectedDate = String(today.getDate()).padStart(2, '0');
+  // ✅ 무한 리디렉션 방지 조건 수정
+  const { selectedYear, selectedMonth, selectedDate } = req.query;
+  if (!selectedYear && !selectedMonth && !selectedDate) {
+    const today = new Date();
+    const y = String(today.getFullYear()).padStart(4, '0');
+    const m = String(today.getMonth() + 1).padStart(2, '0');
+    const d = String(today.getDate()).padStart(2, '0');
 
-      const existingQueryString = req.query;
+    const redirectURL = `${req.baseUrl}?selectedYear=${y}&selectedMonth=${m}&selectedDate=${d}`;
+    console.log("🔁 Redirecting to:", redirectURL);
+    return res.redirect(redirectURL);
+  }
 
-      if (Object.keys(existingQueryString).length === 0) {
-        const newURL = `${req.protocol}://${req.get('host')}${req.baseUrl}?selectedYear=${selectedYear}&selectedMonth=${selectedMonth}&selectedDate=${selectedDate}`;
-        return res.redirect(newURL);
-      }
+  const date = selectedYear + selectedMonth + selectedDate;
+
+  try {
+    const calendarResult = await calendarService.retrieveCalendar(user_id, date);
+    const calendarDataResult = await calendarService.retrieveSelectedCalendar(user_id, date);
+
+    if (calendarResult.length > 0) {
+      console.log("✅ 캘린더 조회: 데이터 있음");
+      return res.render('calendar/calendar.ejs', { calendarResult, calendarDataResult });
+    } else {
+      console.log("⚠️ 캘린더 조회: 데이터 없음");
+      return res.render('calendar/calendar.ejs', { calendarResult: null, calendarDataResult });
     }
-
-    if (!user_id) return res.send(baseResponse.USER_USERIDX_EMPTY);
-    if (user_id <= 0) return res.send(baseResponse.USER_USERIDX_LENGTH);
-
-    try {
-      const calendarResult = await calendarService.retrieveCalendar(user_id, date);
-      const calendarDataResult = await calendarService.retrieveSelectedCalendar(user_id, date);
-      //const MindDiaryResult = await calendarService.retrieveCalendar(user_id, date);
-      //const MindDiaryDataResult = await calendarService.retrieveSelectedMindDiary(user_id, date);
-
-      //console.log("🧠 MindDiaryDataResult:", MindDiaryDataResult);
-
-      if (calendarResult.length > 0) {
-        console.log("✅ 캘린더 조회: 데이터 있음");
-        return res.render('calendar/calendar.ejs', { calendarResult, calendarDataResult});
-      } else {
-        console.log("⚠️ 캘린더 조회: 데이터 없음");
-        return res.render('calendar/calendar.ejs', { calendarResult: null, calendarDataResult});
-      }
-    } catch (err) {
-      console.error("❌ getCalendar 에러:", err);
-      return res.status(500).send("서버 에러 발생");
-    }
-  
+  } catch (err) {
+    console.error("❌ getCalendar 에러:", err);
+    return res.status(500).send("서버 에러 발생");
+  }
 };
 
 exports.postCalendar = async function (req, res) {
