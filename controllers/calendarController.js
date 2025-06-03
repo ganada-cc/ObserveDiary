@@ -8,6 +8,8 @@ const baseResponse = require("../config/baseResponseStatus");
 
 //캘린더 조회
 exports.getCalendar = async function (req, res) {
+  console.log('토큰 쿠키:', req.cookies.x_auth);
+
   const token = req.cookies.x_auth;
   if (token) {
     const decodedToken = jwt.verify(token, secret.jwtsecret); // 토큰 검증, 복호화
