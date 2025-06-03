@@ -14,18 +14,18 @@ exports.getCalendar = async function (req, res) {
     console.log('⚠️ x-user-id 헤더가 없습니다!');
     return res.send(baseResponse.USER_USERIDX_EMPTY);
   }
-
   if (parseInt(user_id) <= 0) return res.send(baseResponse.USER_USERIDX_LENGTH);
 
-  // ✅ 무한 리디렉션 방지 조건 수정
-  const { selectedYear, selectedMonth, selectedDate } = req.query;
-  if (!selectedYear && !selectedMonth && !selectedDate) {
-    const today = new Date();
-    const y = String(today.getFullYear()).padStart(4, '0');
-    const m = String(today.getMonth() + 1).padStart(2, '0');
-    const d = String(today.getDate()).padStart(2, '0');
+  let { selectedYear, selectedMonth, selectedDate } = req.query;
 
-    const redirectURL = `${req.baseUrl}?selectedYear=${y}&selectedMonth=${m}&selectedDate=${d}`;
+  // ✅ 하나라도 누락되면 리디렉션
+  if (!selectedYear || !selectedMonth || !selectedDate) {
+    const today = new Date();
+    selectedYear = String(today.getFullYear()).padStart(4, '0');
+    selectedMonth = String(today.getMonth() + 1).padStart(2, '0');
+    selectedDate = String(today.getDate()).padStart(2, '0');
+
+    const redirectURL = `${req.baseUrl}?selectedYear=${selectedYear}&selectedMonth=${selectedMonth}&selectedDate=${selectedDate}`;
     console.log("🔁 Redirecting to:", redirectURL);
     return res.redirect(redirectURL);
   }
