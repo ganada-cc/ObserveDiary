@@ -8,7 +8,7 @@ const baseResponse = require("../config/baseResponseStatus");
 
 // 캘린더 조회
 exports.getCalendar = async function (req, res) {
-  const user_id = req.user.user_id;
+  const user_id = req.user.x-user-id;
   if (!user_id) {
     console.log('⚠️ x-user-id 헤더가 없습니다!');
   } else {
