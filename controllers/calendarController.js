@@ -117,14 +117,3 @@ exports.postCalendar = async function (req, res) {
   
 };
 
-exports.liveness = (req, res) => res.status(200).send('OK');
-exports.readiness = async (req, res) => {
-  try {
-    const conn = await pool.getConnection();
-    await conn.ping();  // DB 연결 확인
-    conn.release();
-    res.status(200).send('Ready');
-  } catch (err) {
-    res.status(500).send('Not Ready');
-  }
-};

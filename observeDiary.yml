@@ -30,16 +30,18 @@ spec:
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
-            path: /calendar/health/liveness
-            port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /calendar/health/readiness
+            path: /health
             port: 3000
           initialDelaySeconds: 10
           periodSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          failureThreshold: 3
         ports:
         - containerPort: 3000
         env:
