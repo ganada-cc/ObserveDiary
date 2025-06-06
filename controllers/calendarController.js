@@ -11,14 +11,14 @@ exports.getCalendar = async function (req, res) {
   const user_id = req.headers['x-user-id'];
 
   if (!user_id) {
-    console.log('⚠️ x-user-id 헤더가 없습니다!');
+    console.log('x-user-id 헤더 없음음');
     return res.send(baseResponse.USER_USERIDX_EMPTY);
   }
   if (parseInt(user_id) <= 0) return res.send(baseResponse.USER_USERIDX_LENGTH);
 
   let { selectedYear, selectedMonth, selectedDate } = req.query;
 
-  // ✅ 하나라도 누락되면 리디렉션
+  // 하나라도 누락되면 리디렉션
   if (!selectedYear || !selectedMonth || !selectedDate) {
     const today = new Date();
     selectedYear = String(today.getFullYear()).padStart(4, '0');
@@ -37,14 +37,14 @@ exports.getCalendar = async function (req, res) {
     const calendarDataResult = await calendarService.retrieveSelectedCalendar(user_id, date);
 
     if (calendarResult.length > 0) {
-      console.log("✅ 캘린더 조회: 데이터 있음");
+      console.log("캘린더 조회: 데이터 있음");
       return res.render('calendar/calendar.ejs', { calendarResult, calendarDataResult });
     } else {
-      console.log("⚠️ 캘린더 조회: 데이터 없음");
+      console.log("캘린더 조회: 데이터 없음");
       return res.render('calendar/calendar.ejs', { calendarResult: null, calendarDataResult });
     }
   } catch (err) {
-    console.error("❌ getCalendar 에러:", err);
+    console.error("getCalendar 에러:", err);
     return res.status(500).send("서버 에러 발생");
   }
 };
@@ -55,9 +55,9 @@ exports.postCalendar = async function (req, res) {
   if (!user_id) return res.send(baseResponse.USER_USERIDX_EMPTY);
   if (parseInt(user_id) <= 0) return res.send(baseResponse.USER_USERIDX_LENGTH);
 
-    console.log("📥 받은 캘린더 데이터:", req.body);
+    console.log("받은 캘린더 데이터:", req.body);
     const date = req.query.selectedYear + req.query.selectedMonth + req.query.selectedDate;
-    console.log("📅 등록 날짜:", date);
+    console.log("등록 날짜:", date);
 
     if (!user_id) return res.send(baseResponse.USER_USERIDX_EMPTY);
     if (user_id <= 0) return res.send(baseResponse.USER_USERIDX_LENGTH);
@@ -83,7 +83,7 @@ exports.postCalendar = async function (req, res) {
         is_check
       );
 
-      console.log("📝 캘린더 저장 결과:", createCalResponse);
+      console.log("캘린더 저장 결과:", createCalResponse);
       const queryString = querystring.stringify(req.query);
 
       if (createCalResponse === "성공") {
@@ -104,7 +104,7 @@ exports.postCalendar = async function (req, res) {
         `);
       }
     } catch (err) {
-      console.error("❌ postCalendar 에러:", err);
+      console.error("postCalendar 에러:", err);
       const queryString = querystring.stringify(req.query);
       return res.send(`
         <script>
