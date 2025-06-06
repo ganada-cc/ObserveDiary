@@ -6,7 +6,8 @@ const calendarController = require('../controllers/calendarController');
 router.get('/', calendarController.getCalendar);
 router.post('/', calendarController.postCalendar);
 
-
+router.get('/health/liveness', healthController.liveness);
+router.get('/health/readiness', healthController.readiness);
 // // calendar 조회 
 // router.get('', calendarController.getCalendar);
 
